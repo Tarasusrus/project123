@@ -22,6 +22,11 @@ services:
         limits:
           cpus: "0.2"
           memory: "512M"
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U ${DB_USER}" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
 
   api:
@@ -51,4 +56,4 @@ networks:
     name: ${COMPOSE_PROJECT_NAME}-internal-net
     driver: bridge
   localhost-net:
-    name: localhost-net
+    name: base-net
