@@ -1,16 +1,23 @@
 package main
 
 import (
+	"BaseApi/internal"
 	"BaseApi/internal/config"
 	"BaseApi/internal/database"
 	"BaseApi/internal/server"
 	"context"
 	"log"
+	"log/slog"
 )
 
 func main() {
 	// Загрузка конфигурации
 	cfg := loadConfig()
+
+	// logger
+	logger := internal.SetUpLogger(cfg.AppConfig.Mode)
+	logger.Info("started", slog.String("APP MODEz", cfg.AppConfig.Mode))
+	logger.Debug("Debug enabled")
 
 	// connections (database)
 	_, err := database.NewGORM(cfg.DBConfig)
