@@ -1,0 +1,54 @@
+version: '3.8'
+
+services:
+  db:
+    container_name: ${COMPOSE_PROJECT_NAME}-db
+    image: postgres:16-alpine
+    ports:
+      - 127.0.0.1:${DB_EXTERNAL_PORT}:5432
+    environment:
+      PGDATA: /var/lib/postgresql/data/pgdata/
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+    networks:
+      - internal-net
+      - localhost-net
+    volumes:
+      - .data:/var/lib/postgresql/data
+    restart: on-failure
+    deploy:
+      resources:
+        limits:
+          cpus: "0.2"
+          memory: "512M"
+
+
+  api:
+    container_name: ${COMPOSE_PROJECT_NAME}-api
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: production
+    ports:
+      - 127.0.0.1:${API_EXTERNAL_PORT}:8080
+    volumes:
+      - ./configs:/app/configs
+    networks:
+      - internal-net
+      - localhost-net
+    depends_on:
+      - db
+    restart: always
+    deploy:
+      resources:
+        limits:
+          cpus: "0.2"
+          memory: "512M"
+
+networks:
+  internal-net:
+    name: ${COMPOSE_PROJECT_NAME}-internal-net
+    driver: bridge
+  localhost-net:
+    name: localhost-net
