@@ -1,9 +1,9 @@
 package main
 
 import (
-	"BaseApi/internal"
 	"BaseApi/internal/config"
 	"BaseApi/internal/database"
+	baseLogger "BaseApi/internal/logger"
 	"BaseApi/internal/server"
 	"context"
 	"log"
@@ -15,7 +15,7 @@ func main() {
 	cfg := loadConfig()
 
 	// logger
-	logger := internal.SetUpLogger(cfg.AppConfig.Mode)
+	logger := baseLogger.SetUpLogger(cfg.AppConfig.Mode)
 	logger.Info("started", slog.String("APP MODEz", cfg.AppConfig.Mode))
 	logger.Debug("Debug enabled")
 
@@ -26,7 +26,7 @@ func main() {
 	}
 	var _ = context.Background()
 
-	httpHandler := server.NewHandler(&cfg.AppConfig)
+	httpHandler := server.NewHandler(&cfg.AppConfig, logger)
 	if err = httpHandler.Serve(); err != nil {
 		log.Fatal(err)
 	}

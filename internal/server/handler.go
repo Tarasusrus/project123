@@ -1,8 +1,11 @@
 package server
 
 import (
+	"BaseApi/internal/server/middleware"
+	"BaseApi/internal/server/middleware/logger"
 	"context"
 	"log"
+	"log/slog"
 	"net/http"
 	"os"
 	"os/signal"
@@ -15,7 +18,7 @@ import (
 type AppCfg struct {
 	Mode                  string `mapstructure:"APP_MODE" default:"release"` // может быть "dev" и "release". "dev" открывает токен обхода
 	Host                  string `mapstructure:"APP_HOST" default:"localhost"`
-	Port                  string `mapstructure:"APP_PORT" default:"8080"`
+	Port                  string `mapstructure:"APP_PORT" default:"8085"`
 	ExternalURL           string `mapstructure:"APP_EXTERNAL_URL"`
 	AccessTokenTtlMinutes int    `mapstructure:"APP_ACCESS_TOKEN_TTL_MINUTES" default:"600"`
 	JwtSecret             string `mapstructure:"APP_JWT_SECRET"`
@@ -27,16 +30,19 @@ type AppCfg struct {
 type Handler struct {
 	Router *mux.Router
 	Server *http.Server
+	logger *slog.Logger
 }
 
 // NewHandler - возвращает хендлер
-func NewHandler(cfg *AppCfg) *Handler {
-	h := &Handler{}
+func NewHandler(cfg *AppCfg, log *slog.Logger) *Handler {
+	h := &Handler{
+		logger: log,
+	}
 	h.Router = mux.NewRouter()
 	h.mapRoutes(cfg.ApiPrefix)
 
 	addr := cfg.Host + ":" + cfg.Port
-	log.Print("Start on: ", addr)
+	log.Info("Start on: ", addr)
 
 	h.Server = &http.Server{
 		Addr:    addr,
@@ -54,9 +60,12 @@ func (h *Handler) mapRoutes(prefix string) {
 	appRouter.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 	}).Methods(http.MethodHead)
+
+	appRouter.Use(middleware.RequestID)
+	appRouter.Use(logger.New(h.logger))
 }
 
-// Serve - запуск нашего сервера и graceful shutdown
+// Serve - запуск сервера и graceful shutdown
 func (h *Handler) Serve() error {
 
 	go func() {

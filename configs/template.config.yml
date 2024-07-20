@@ -10,3 +10,4 @@ app_config:
   APP_MODE: "${APP_MODE}"
   APP_HOST: "${APP_LISTEN_HOST}"
   APP_PORT: "${APP_LISTEN_PORT}"
+
