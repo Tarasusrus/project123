@@ -70,7 +70,10 @@ func (h *Handler) Serve() error {
 	<-interruptChannel
 	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
 	defer cancel()
-	h.Server.Shutdown(ctx)
+	err := h.Server.Shutdown(ctx)
+	if err != nil {
+		return err
+	}
 
 	log.Println("shut down gracefully")
 	return nil
