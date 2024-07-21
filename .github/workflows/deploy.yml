@@ -5,6 +5,14 @@ on:
     branches:
       - main  # Или любая другая ветка для деплоя
 
+env:
+  COMPOSE_PROJECT_NAME: ${{ secrets.COMPOSE_PROJECT_NAME }}
+  DB_EXTERNAL_PORT: ${{ secrets.DB_EXTERNAL_PORT }}
+  DB_USER: ${{ secrets.DB_USER }}
+  DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+  DB_NAME: ${{ secrets.DB_NAME }}
+  API_EXTERNAL_PORT: ${{ secrets.API_EXTERNAL_PORT }}
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
