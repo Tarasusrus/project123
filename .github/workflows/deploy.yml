@@ -38,5 +38,5 @@ jobs:
           server: ${{ secrets.FTP_SERVER }}
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
-          local-dir: build  # Директория, которую вы хотите загрузить
+          local-dir: ./  # Директория, которую вы хотите загрузить
           server-dir: /  # Путь на сервере, куда нужно загрузить файлы
