@@ -30,7 +30,7 @@ jobs:
           node-version: '18'
 
       - name: Build project
-        run: go build -o myapp
+        run: go build -o myapplication ./cmd/api
 
       - name: Deploy to Beget via FTP
         uses: SamKirkland/FTP-Deploy-Action@4.2.0
