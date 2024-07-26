@@ -30,10 +30,7 @@ jobs:
           node-version: '18'
 
       - name: Build project
-        run: |
-          # Ваши команды сборки, например:
-          npm install
-          npm run build
+        run: go build -o myapp
 
       - name: Deploy to Beget via FTP
         uses: SamKirkland/FTP-Deploy-Action@4.2.0
