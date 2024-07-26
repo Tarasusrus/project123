@@ -1,17 +1,9 @@
-name: Deploy with Docker Compose to Vercel
+name: Deploy to Beget via FTP
 
 on:
   push:
     branches:
       - main  # Или любая другая ветка для деплоя
-
-env:
-  COMPOSE_PROJECT_NAME: ${{ secrets.COMPOSE_PROJECT_NAME }}
-  DB_EXTERNAL_PORT: ${{ secrets.DB_EXTERNAL_PORT }}
-  DB_USER: ${{ secrets.DB_USER }}
-  DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
-  DB_NAME: ${{ secrets.DB_NAME }}
-  API_EXTERNAL_PORT: ${{ secrets.API_EXTERNAL_PORT }}
 
 jobs:
   deploy:
@@ -32,33 +24,22 @@ jobs:
       - name: Run Golangci-lint
         uses: golangci/golangci-lint-action@v6.0.1
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-
-      - name: Log in to Docker Hub
-        uses: docker/login-action@v3
-        with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
-
-      - name: Build Docker images
-        run: docker-compose -f docker-compose.yml build
-
-      - name: Push Docker images
-        run: docker-compose -f docker-compose.yml push
-
-      - name: Run Docker Compose
-        run: docker-compose -f docker-compose.yml up -d
-
-      - name: Install Node.js
+      - name: Set up Node.js environment
         uses: actions/setup-node@v2
         with:
           node-version: '18'
 
-      - name: Install Vercel CLI
-        run: npm install -g vercel
+      - name: Build project
+        run: |
+          # Ваши команды сборки, например:
+          npm install
+          npm run build
 
-      - name: Deploy to Vercel
-        env:
-          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
-        run: vercel --prod --token $VERCEL_TOKEN
+      - name: Deploy to Beget via FTP
+        uses: SamKirkland/FTP-Deploy-Action@4.2.0
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          local-dir: build  # Директория, которую вы хотите загрузить
+          server-dir: /  # Путь на сервере, куда нужно загрузить файлы
