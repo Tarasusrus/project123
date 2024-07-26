@@ -42,7 +42,7 @@ func NewHandler(cfg *AppCfg, log *slog.Logger) *Handler {
 	h.mapRoutes(cfg.ApiPrefix)
 
 	addr := cfg.Host + ":" + cfg.Port
-	log.Info("Start on: ", addr)
+	log.Info("app_start", "addr", addr)
 
 	h.Server = &http.Server{
 		Addr:    addr,

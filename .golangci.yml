@@ -1,0 +1,57 @@
+# Чтобы увидеть, какой файл конфигурации используется и откуда он был получен, запустите golangci-lint с опцией -v.
+run:
+  # Include test files or not.
+  # Default: true
+  tests: false
+
+output:
+  formats:
+    - format: colored-line-number # Форматы, используемые для отображения проблем, включают: colored-line-number,
+      # line-number, json, colored-tab, tab, checkstyle, code-climate, junit-xml, github-actions, teamcity
+      path: stdout # stderr, или путь к файлу
+      #path: report.xml
+  print-issued-lines: true # Напечатать строки кода с ошибкой.
+  print-linter-name: true # Print linter name in the end of issue text.
+  uniq-by-line: true # Make issues output unique by line.
+  sort-results: true # Sort results by the order defined in `sort-order`.
+  #   1. error
+  #   2. warning
+  #   3. high
+  #   4. medium
+  #   5. low
+  sort-order:
+    - severity
+    - linter
+    - file
+  show-stats: true # Show statistics per linter.
+
+linters:
+  disable-all: true
+  enable:
+    #    - wrapcheck # Checks that errors returned from external packages are wrapped.
+    - tagliatelle # Checks tags.
+    - sqlclosecheck # Checks that sql.Rows, sql.Stmt, sqlx.NamedStmt, pgx.Query are closed.
+    - rowserrcheck # Checks whether Rows.Err of rows is checked successfully.
+    - noctx # Finds sending http request without context.Context.
+    #    - nlreturn # Nlreturn checks for a new line before return and branch statements
+    - nilerr # Finds the code that returns nil even if it checks that the error is not nil.
+    #    - goconst # Finds repeated strings that could be replaced by a constant.
+    #    - funlen # Tool for detection of long functions.
+    - errname # Checks that sentinel errors are prefixed with the Err and error types are suffixed with the Error.
+    - dupl # Tool for code clone detection.
+    - bodyclose # Checks whether HTTP response body is closed successfully.
+    - unused # Checks Go code for unused constants, variables, functions and types.
+    - ineffassign # Detects when assignments to existing variables are not used.
+    - govet # Vet examines Go source code and reports suspicious constructs.
+    - errcheck # program for checking for unchecked errors in Go code
+    - gosimple # Linter for Go source code that specializes in simplifying code
+
+linters-settings:
+  tagliatelle:
+    case:
+      rules:
+        json: snake
+  # Определяет допустимую длину функции и количества операторов.
+  funlen:
+    lines: 120
+    statements: 80

@@ -2,6 +2,7 @@ package middleware
 
 import (
 	"context"
+	"fmt"
 	"net/http"
 	"sync/atomic"
 
@@ -23,7 +24,7 @@ func RequestID(next http.Handler) http.Handler {
 			requestID = uuid.New().String()
 		} else {
 			// Увеличиваем счетчик запросов, чтобы получить уникальный идентификатор
-			requestID = uuid.New().String() + "-" + string(atomic.AddUint64(&req, 1))
+			requestID = uuid.New().String() + "-" + fmt.Sprint(atomic.AddUint64(&req, 1))
 		}
 
 		// Вставляем requestID в контекст запроса
