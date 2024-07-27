@@ -1,4 +1,4 @@
-name: Deploy to Beget via FTP
+name: Deploy
 
 on:
   push:
@@ -58,13 +58,13 @@ jobs:
 
       - name: Transfer files via SSH
         run: |
-          scp -r build/base-api ${{ env.HOST }}:${{ env.DEPLOY_DIRECTORY }}/
-          scp docker-compose.yml ${{ env.HOST }}:${{ env.DEPLOY_DIRECTORY }}/
-          scp -r configs ${{ env.HOST }}:${{ env.DEPLOY_DIRECTORY }}/
+          scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -r build/base-api ${{ env.HOST }}:${{ env.DEPLOY_DIRECTORY }}/
+          scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null docker-compose.yml ${{ env.HOST }}:${{ env.DEPLOY_DIRECTORY }}/
+          scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -r configs ${{ env.HOST }}:${{ env.DEPLOY_DIRECTORY }}/
 
       - name: Deploy via SSH
         run: |
-          ssh ${{ env.HOST }} << 'EOF'
+          ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null ${{ env.HOST }} << 'EOF'
             cd ${{ env.DEPLOY_DIRECTORY }}
             docker-compose down
             docker-compose up -d --build
