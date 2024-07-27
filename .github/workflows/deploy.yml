@@ -27,6 +27,12 @@ jobs:
       - name: Build project
         run: go build -o myapplication ./cmd/api
 
+      - name: Archive build artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: build-artifacts
+          path: ./build/
+
   deploy:
     needs: lint-and-build
     runs-on: ubuntu-latest
@@ -43,6 +49,6 @@ jobs:
           server: ${{ secrets.FTP_SERVER }}
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
-          local-dir: ./  # Директория, которую вы хотите загрузить
+          local-dir: ./build/ # Директория, которую вы хотите загрузить
           server-dir: /  # Путь на сервере, куда нужно загрузить файлы
           protocol: ftps
