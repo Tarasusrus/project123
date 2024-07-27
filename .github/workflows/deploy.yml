@@ -56,6 +56,10 @@ jobs:
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
+      - name: Create remote directory
+        run: |
+          ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null ${{ env.HOST }} "mkdir -p ${{ env.DEPLOY_DIRECTORY }}"
+
       - name: Transfer files via SSH
         run: |
           scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -r base-api ${{ env.HOST }}:${{ env.DEPLOY_DIRECTORY }}/
