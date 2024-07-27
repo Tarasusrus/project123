@@ -1,18 +1,13 @@
-name: Deploy to Server via SSH
+name: Deploy to Beget via FTP
 
 on:
   push:
     branches:
-      - main  # Or whichever branch to deploy from
+      - main  # Или любая другая ветка для деплоя
 
 jobs:
-  build-and-deploy:
+  lint-and-build:
     runs-on: ubuntu-latest
-    env:
-      HOST: root@87.228.12.165  # Update to your server's user@IP
-      DEPLOY_DIRECTORY: /root/apps/base-api
-      CONFIG_PATH: /root/apps/base-api/configs/prod.yml
-      ENV_FILE_PATH: /root/apps/base-api/config.env
 
     steps:
       - name: Checkout repository
@@ -23,13 +18,38 @@ jobs:
         with:
           go-version: 1.22
 
-      - name: Run lint and tests
-        run: |
-          go mod tidy
-          golangci-lint run
+      - name: Run go mod tidy
+        run: go mod tidy
 
-      - name: Build the Go project
+      - name: Run Golangci-lint
+        uses: golangci/golangci-lint-action@v6.0.1
+
+      - name: Build project
         run: go build -o build/base-api ./cmd/api
+
+      - name: Archive build artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: build-artifacts
+          path: build/
+
+  deploy:
+    needs: lint-and-build
+    runs-on: ubuntu-latest
+    env:
+      HOST: root@87.228.12.165
+      DEPLOY_DIRECTORY: /root/apps/base-api
+      CONFIG_PATH: /root/apps/base-api/configs/prod.yml
+      ENV_FILE_PATH: /root/apps/base-api/config.env
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Download build artifacts
+        uses: actions/download-artifact@v2
+        with:
+          name: build-artifacts
 
       - name: Setup SSH
         uses: webfactory/ssh-agent@v0.8.0
