@@ -1,13 +1,18 @@
-name: Deploy to Beget via FTP
+name: Deploy to Server via SSH
 
 on:
   push:
     branches:
-      - main  # Или любая другая ветка для деплоя
+      - main  # Or whichever branch to deploy from
 
 jobs:
-  lint-and-build:
+  build-and-deploy:
     runs-on: ubuntu-latest
+    env:
+      HOST: root@87.228.12.165  # Update to your server's user@IP
+      DEPLOY_DIRECTORY: /root/apps/base-api
+      CONFIG_PATH: /root/apps/base-api/configs/prod.yml
+      ENV_FILE_PATH: /root/apps/base-api/config.env
 
     steps:
       - name: Checkout repository
@@ -18,47 +23,22 @@ jobs:
         with:
           go-version: 1.22
 
-      - name: Run go mod tidy
-        run: go mod tidy
+      - name: Run lint and tests
+        run: |
+          go mod tidy
+          golangci-lint run
 
-      - name: Run Golangci-lint
-        uses: golangci/golangci-lint-action@v6.0.1
-
-      - name: Build project
+      - name: Build the Go project
         run: go build -o build/base-api ./cmd/api
-
-      - name: Archive build artifacts
-        uses: actions/upload-artifact@v2
-        with:
-          name: build-artifacts
-          path: build/
-
-  deploy:
-    needs: lint-and-build
-    runs-on: ubuntu-latest
-    env:
-      HOST: root@87.228.12.165
-      DEPLOY_DIRECTORY: /root/apps/base-api
-      CONFIG_PATH: /root/apps/base-api/configs/prod.yml
-      ENV_FILE_PATH: /root/apps/base-api/config.env
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
-
-      - name: Download build artifacts
-        uses: actions/download-artifact@v2
-        with:
-          name: build-artifacts
 
       - name: Setup SSH
         uses: webfactory/ssh-agent@v0.8.0
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
-      - name: Copy files via SSH
+      - name: Transfer files via SSH
         run: |
-          scp -r build/myapplication ${{ env.HOST }}:${{ env.DEPLOY_DIRECTORY }}/
+          scp -r build/base-api ${{ env.HOST }}:${{ env.DEPLOY_DIRECTORY }}/
           scp docker-compose.yml ${{ env.HOST }}:${{ env.DEPLOY_DIRECTORY }}/
           scp -r configs ${{ env.HOST }}:${{ env.DEPLOY_DIRECTORY }}/
 
