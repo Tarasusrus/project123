@@ -40,4 +40,4 @@ jobs:
           password: ${{ secrets.FTP_PASSWORD }}
           local-dir: ./  # Директория, которую вы хотите загрузить
           server-dir: /  # Путь на сервере, куда нужно загрузить файлы
-          ftps: true
+          protocol: ftps
