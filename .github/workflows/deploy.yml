@@ -25,30 +25,47 @@ jobs:
         uses: golangci/golangci-lint-action@v6.0.1
 
       - name: Build project
-        run: go build -o myapplication ./cmd/api
+        run: go build -o build/base-api ./cmd/api
 
       - name: Archive build artifacts
         uses: actions/upload-artifact@v2
         with:
           name: build-artifacts
-          path: ./build/
+          path: build/
 
   deploy:
     needs: lint-and-build
     runs-on: ubuntu-latest
+    env:
+      HOST: root@87.228.12.165
+      DEPLOY_DIRECTORY: /root/apps/base-api
+      CONFIG_PATH: /root/apps/base-api/configs/prod.yml
+      ENV_FILE_PATH: /root/apps/base-api/config.env
 
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
       - name: Download build artifacts
         uses: actions/download-artifact@v2
         with:
           name: build-artifacts
 
-      - name: Deploy to Beget via FTP
-        uses: SamKirkland/FTP-Deploy-Action@4.2.0
+      - name: Setup SSH
+        uses: webfactory/ssh-agent@v0.8.0
         with:
-          server: ${{ secrets.FTP_SERVER }}
-          username: ${{ secrets.FTP_USERNAME }}
-          password: ${{ secrets.FTP_PASSWORD }}
-          local-dir: ./build/ # Директория, которую вы хотите загрузить
-          server-dir: /  # Путь на сервере, куда нужно загрузить файлы
-          protocol: ftps
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      - name: Copy files via SSH
+        run: |
+          scp -r build/myapplication ${{ env.HOST }}:${{ env.DEPLOY_DIRECTORY }}/
+          scp docker-compose.yml ${{ env.HOST }}:${{ env.DEPLOY_DIRECTORY }}/
+          scp -r configs ${{ env.HOST }}:${{ env.DEPLOY_DIRECTORY }}/
+
+      - name: Deploy via SSH
+        run: |
+          ssh ${{ env.HOST }} << 'EOF'
+            cd ${{ env.DEPLOY_DIRECTORY }}
+            docker-compose down
+            docker-compose up -d --build
+          EOF
