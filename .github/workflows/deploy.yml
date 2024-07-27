@@ -32,6 +32,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Download build artifacts
+        uses: actions/download-artifact@v2
+        with:
+          name: build-artifacts
+
       - name: Deploy to Beget via FTP
         uses: SamKirkland/FTP-Deploy-Action@4.2.0
         with:
