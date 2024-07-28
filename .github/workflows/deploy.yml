@@ -60,6 +60,20 @@ jobs:
         run: |
           ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null ${{ env.HOST }} "mkdir -p ${{ env.DEPLOY_DIRECTORY }}"
 
+      - name: Create .env file
+        run: |
+          echo 'COMPOSE_PROJECT_NAME=base-api-backend' >> .env
+          echo 'APP_MODE=prod' >> .env
+          echo "APP_LISTEN_HOST=${{ secrets.APP_HOST }}" >> .env
+          echo "APP_LISTEN_PORT=${{ secrets.APP_PORT }}" >> .env
+          echo "DB_EXTERNAL_PORT=${{ secrets.DB_EXTERNAL_PORT }}" >> .env
+          echo "DB_HOST=${{ secrets.DB_HOST }}" >> .env
+          echo "DB_PORT=${{ secrets.DB_PORT }}" >> .env
+          echo "DB_USER=${{ secrets.DB_USER }}" >> .env
+          echo "DB_NAME=${{ secrets.DB_NAME }}" >> .env
+          echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> .env
+          echo "DB_SSL_MODE=${{ secrets.DB_SSL_MODE }}" >> .env
+
       - name: Transfer files via SSH
         run: |
           scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -r base-api ${{ env.HOST }}:${{ env.DEPLOY_DIRECTORY }}/
@@ -70,6 +84,8 @@ jobs:
         run: |
           ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null ${{ env.HOST }} << 'EOF'
             cd ${{ env.DEPLOY_DIRECTORY }}
+            chmod +x scripts/set_config.sh
+            ./scripts/set_config.sh
             docker-compose down
             docker-compose up -d --build
           EOF
