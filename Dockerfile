@@ -1,15 +1,23 @@
+# Установка стадии сборки
 FROM golang:1.22-alpine AS builder
 
 WORKDIR /app
-COPY . /app
 
+# Копируем go.mod и go.sum для кэширования зависимостей
+COPY go.mod go.sum ./
 RUN go mod download
 
-RUN CGO_ENABLED=0 GOOS=linux go build -o app cmd/api/main.go
+# Копируем оставшиеся файлы и собираем проект
+COPY . .
+RUN go mod tidy
+RUN CGO_ENABLED=0 GOOS=linux go build -v -o base-api ./cmd/api
 
-FROM alpine:latest AS production
+# Финальная стадия
+FROM alpine:latest
+
 WORKDIR /app
 
-COPY --from=builder /app/app ./app
+COPY --from=builder /app/base-api /app/base-api
+COPY ./configs /app/configs
 
-CMD ["./app"]
+CMD ["./base-api"]

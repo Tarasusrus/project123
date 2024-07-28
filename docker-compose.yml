@@ -21,7 +21,7 @@ services:
       resources:
         limits:
           cpus: "0.2"
-          memory: "512M"
+          memory: "256M"
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready -U ${DB_USER}" ]
       interval: 10s
@@ -48,8 +48,8 @@ services:
     deploy:
       resources:
         limits:
-          cpus: "0.2"
-          memory: "512M"
+          cpus: "0.1"
+          memory: "256M"
 
 networks:
   internal-net:
