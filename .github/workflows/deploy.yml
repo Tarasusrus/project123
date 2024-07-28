@@ -68,6 +68,12 @@ jobs:
           ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null ${{ env.HOST }} "echo 'DB_PASSWORD=${{ secrets.DB_PASSWORD }}' >> ${{ env.DEPLOY_DIRECTORY }}/.env"
           ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null ${{ env.HOST }} "echo 'DB_NAME=${{ secrets.DB_NAME }}' >> ${{ env.DEPLOY_DIRECTORY }}/.env"
           ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null ${{ env.HOST }} "echo 'API_EXTERNAL_PORT=${{ secrets.API_EXTERNAL_PORT }}' >> ${{ env.DEPLOY_DIRECTORY }}/.env"
+          ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null ${{ env.HOST }} "echo 'APP_MODE=prod' >> ${{ env.DEPLOY_DIRECTORY }}/.env"
+          ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null ${{ env.HOST }} "echo 'APP_LISTEN_HOST=0.0.0.0' >> ${{ env.DEPLOY_DIRECTORY }}/.env"
+          ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null ${{ env.HOST }} "echo 'APP_LISTEN_PORT=8080' >> ${{ env.DEPLOY_DIRECTORY }}/.env"
+          ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null ${{ env.HOST }} "echo 'DB_HOST=base-api-backend-db' >> ${{ env.DEPLOY_DIRECTORY }}/.env"
+          ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null ${{ env.HOST }} "echo 'DB_PORT=5432' >> ${{ env.DEPLOY_DIRECTORY }}/.env"
+          ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null ${{ env.HOST }} "echo 'DB_SSL_MODE=disable' >> ${{ env.DEPLOY_DIRECTORY }}/.env"
 
       - name: Transfer files via SSH
         run: |
