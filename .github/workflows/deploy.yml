@@ -76,7 +76,7 @@ jobs:
 
       - name: Transfer files via SSH
         run: |
-          scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -r ./ ${{ env.HOST }}:${{ env.DEPLOY_DIRECTORY }}/
+          scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -r * ${{ env.HOST }}:${{ env.DEPLOY_DIRECTORY }}/
 
       - name: Deploy via SSH
         run: |
