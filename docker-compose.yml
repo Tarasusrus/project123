@@ -34,7 +34,6 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-      target: builder
     ports:
       - 127.0.0.1:${API_EXTERNAL_PORT}:8080
     volumes:

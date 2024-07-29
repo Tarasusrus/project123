@@ -20,4 +20,4 @@ WORKDIR /app
 COPY --from=builder /app/base-api /app/base-api
 COPY ./configs /app/configs
 
-CMD ["./base-api"]
+CMD ["/app/base-api"]

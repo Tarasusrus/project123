@@ -16,14 +16,10 @@ import (
 
 // AppCfg - конфигурационные данные приложения
 type AppCfg struct {
-	Mode                  string `mapstructure:"APP_MODE" default:"release"` // может быть "dev" и "release". "dev" открывает токен обхода
-	Host                  string `mapstructure:"APP_HOST" default:"localhost"`
-	Port                  string `mapstructure:"APP_PORT" default:"8085"`
-	ExternalURL           string `mapstructure:"APP_EXTERNAL_URL"`
-	AccessTokenTtlMinutes int    `mapstructure:"APP_ACCESS_TOKEN_TTL_MINUTES" default:"600"`
-	JwtSecret             string `mapstructure:"APP_JWT_SECRET"`
-	ApiKey                string `mapstructure:"SERVICE_API_KEY"`
-	ApiPrefix             string `mapstructure:"API_PREFIX" default:""`
+	Mode      string `mapstructure:"APP_MODE" default:"release"` // может быть "dev" и "release". "dev" открывает токен обхода
+	Host      string `mapstructure:"APP_HOST" default:"localhost"`
+	Port      string `mapstructure:"APP_PORT" default:"8085"`
+	ApiPrefix string `mapstructure:"API_PREFIX" default:""`
 }
 
 // Handler - структура хендлера
