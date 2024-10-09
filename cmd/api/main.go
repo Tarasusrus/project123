@@ -3,22 +3,18 @@ package main
 import (
 	"BaseApi/internal/config"
 	"BaseApi/internal/database"
-	baseLogger "BaseApi/internal/logger"
 	"BaseApi/internal/server"
+	"BaseApi/tools/logger"
 	"context"
 	"log"
-	"log/slog"
 )
 
 func main() {
 	// Загрузка конфигурации
 	cfg := loadConfig()
 
-	// logger
-	logger := baseLogger.SetUpLogger(cfg.AppConfig.Mode)
-	logger.Info("started", slog.String("APP MODEz", cfg.AppConfig.Mode))
-	logger.Debug("Debug enabled")
-
+	// slogLogger
+	logSlog := setupLogger(cfg)
 	// connections (database)
 	_, err := database.NewGORM(cfg.DBConfig)
 	if err != nil {
@@ -26,7 +22,7 @@ func main() {
 	}
 	var _ = context.Background()
 
-	httpHandler := server.NewHandler(&cfg.AppConfig, logger)
+	httpHandler := server.NewHandler(&cfg.AppConfig, logSlog)
 	if err = httpHandler.Serve(); err != nil {
 		log.Fatal(err)
 	}
@@ -41,4 +37,10 @@ func loadConfig() *config.Env {
 
 	return cfg
 
+}
+
+func setupLogger(cfg *config.Env) *logger.SlogLogger {
+	// Инициализируем логгер на основе конфигурации
+	baseLogger := logger.SetUpLogger(cfg.AppConfig.Mode, cfg.LogConfig.Level, cfg.LogConfig.Format, cfg.LogConfig.AddSource)
+	return logger.NewSlogLogger(baseLogger)
 }

@@ -1,35 +1,23 @@
 package logger
 
-import (
-	"log/slog"
-	"os"
-)
+type Logger interface {
+	Log(message string, level Level, ctx ...any)
+	Debug(message string, ctx ...any)
+	Info(message string, ctx ...any)
+	Warn(message string, ctx ...any)
+	Error(message string, ctx ...any)
+	Fatal(message string, ctx ...any)
+	Panic(message string, ctx ...any)
+	GetLogger() any
+}
+
+type Level int
 
 const (
-	envLocal = "local"
-	envDev   = "dev"
-	envProd  = "prod"
+	Debug Level = -4
+	Info  Level = 0
+	Warn  Level = 4
+	Error Level = 8
+	Fatal Level = 12
+	Panic Level = 16
 )
-
-func SetUpLogger(env string) *slog.Logger {
-	var logger *slog.Logger
-	switch env {
-	case envLocal:
-		logger = slog.New(slog.NewTextHandler(os.Stdout, &slog.HandlerOptions{
-			AddSource:   false,
-			Level:       slog.LevelDebug,
-			ReplaceAttr: nil,
-		}))
-	case envDev:
-		logger = slog.New(slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{
-			AddSource:   false,
-			Level:       slog.LevelDebug,
-			ReplaceAttr: nil,
-		}))
-	case envProd:
-		logger = slog.New(slog.NewTextHandler(os.Stdout, &slog.HandlerOptions{
-			Level: slog.LevelInfo,
-		}))
-	}
-	return logger
-}

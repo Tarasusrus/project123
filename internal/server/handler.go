@@ -1,11 +1,10 @@
 package server
 
 import (
+	"BaseApi/internal/logger"
 	"BaseApi/internal/server/middleware"
-	"BaseApi/internal/server/middleware/logger"
 	"context"
 	"log"
-	"log/slog"
 	"net/http"
 	"os"
 	"os/signal"
@@ -26,19 +25,19 @@ type AppCfg struct {
 type Handler struct {
 	Router *mux.Router
 	Server *http.Server
-	logger *slog.Logger
+	logger logger.Logger
 }
 
 // NewHandler - возвращает хендлер
-func NewHandler(cfg *AppCfg, log *slog.Logger) *Handler {
+func NewHandler(cfg *AppCfg, logger logger.Logger) *Handler {
 	h := &Handler{
-		logger: log,
+		logger: logger,
 	}
 	h.Router = mux.NewRouter()
 	h.mapRoutes(cfg.ApiPrefix)
 
 	addr := cfg.Host + ":" + cfg.Port
-	log.Info("app_start", "addr", addr)
+	logger.Info("app_start", "addr", addr)
 
 	h.Server = &http.Server{
 		Addr:    addr,
@@ -58,7 +57,7 @@ func (h *Handler) mapRoutes(prefix string) {
 	}).Methods(http.MethodHead)
 
 	appRouter.Use(middleware.RequestID)
-	appRouter.Use(logger.New(h.logger))
+
 }
 
 // Serve - запуск сервера и graceful shutdown

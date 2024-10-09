@@ -9,9 +9,9 @@ import (
 type Config struct {
 	Host     string `mapstructure:"DB_HOST" default:"localhost"`
 	Port     string `mapstructure:"DB_PORT" default:"5432"`
-	User     string `mapstructure:"DB_USER" default:"seleroad"`
-	DBName   string `mapstructure:"DB_NAME" default:"wbadmin"`
-	Password string `mapstructure:"DB_PASSWORD" default:"seleroad"`
+	User     string `mapstructure:"DB_USER" default:"postgre"`
+	DBName   string `mapstructure:"DB_NAME" default:"effectiveMobile"`
+	Password string `mapstructure:"DB_PASSWORD" default:"effectiveMobile"`
 	SSLMode  string `mapstructure:"SSL_MODE" default:"disable"`
 }
 
