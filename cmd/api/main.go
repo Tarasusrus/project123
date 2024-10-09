@@ -44,3 +44,11 @@ func setupLogger(cfg *config.Env) *logger.SlogLogger {
 	baseLogger := logger.SetUpLogger(cfg.AppConfig.Mode, cfg.LogConfig.Level, cfg.LogConfig.Format, cfg.LogConfig.AddSource)
 	return logger.NewSlogLogger(baseLogger)
 }
+
+// todo добавить логирования БД
+// todo Добавить миграцию
+// todo написать контроллеры
+// todo написать логику
+// todo написать репозиторий
+// todo написать доки
+// todo по-тестить
