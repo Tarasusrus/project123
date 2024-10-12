@@ -15,13 +15,21 @@ type Config struct {
 	SSLMode  string `mapstructure:"SSL_MODE" default:"disable"`
 }
 
-func NewGORM(cfg Config) (*gorm.DB, error) {
+type Database struct {
+	client *gorm.DB
+}
+
+func NewGORM(cfg Config) (*Database, error) {
 	dsn := fmt.Sprintf("host=%s port=%s user=%s dbname=%s password=%s sslmode=%s",
 		cfg.Host, cfg.Port, cfg.User, cfg.DBName, cfg.Password, cfg.SSLMode)
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
 		return nil, err
 	}
-	return db, nil
+	return &Database{client: db}, nil
 
+}
+
+func (d *Database) ConnectDB() *gorm.DB {
+	return d.client
 }
