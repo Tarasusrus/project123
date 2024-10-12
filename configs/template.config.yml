@@ -11,3 +11,7 @@ app_config:
   APP_HOST: "${APP_LISTEN_HOST}"
   APP_PORT: "${APP_LISTEN_PORT}"
 
+log_config:
+  LEVEL: "${LEVEL}"  # Возможные значения: debug, info, warn, error
+  FORMAT: "${FORMAT}"  # Возможные значения: json, text
+  ADD_SOURCE: "${ADD_SOURCE}" # Возможные значения: false, true

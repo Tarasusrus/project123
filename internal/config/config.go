@@ -2,6 +2,7 @@ package config
 
 import (
 	"BaseApi/internal/database"
+	"BaseApi/internal/logger"
 	"BaseApi/internal/server"
 	"github.com/spf13/viper"
 )
@@ -9,6 +10,7 @@ import (
 type Env struct {
 	DBConfig  database.Config
 	AppConfig server.AppCfg
+	LogConfig logger.LogConfig
 }
 
 func Init() (*Env, error) {
@@ -26,6 +28,9 @@ func Init() (*Env, error) {
 	}
 
 	if err := viper.UnmarshalKey("app_config", &cfg.AppConfig); err != nil {
+		return nil, err
+	}
+	if err := viper.UnmarshalKey("log_config", &cfg.LogConfig); err != nil {
 		return nil, err
 	}
 	return &cfg, nil
