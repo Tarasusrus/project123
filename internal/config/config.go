@@ -2,8 +2,8 @@ package config
 
 import (
 	"BaseApi/internal/database"
+	"BaseApi/internal/logger"
 	"BaseApi/internal/server"
-	"BaseApi/tools/logger"
 	"github.com/spf13/viper"
 )
 
