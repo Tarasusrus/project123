@@ -14,12 +14,17 @@ func main() {
 	cfg := loadConfig()
 
 	// slogLogger
-	logSlog := setupLogger(cfg)
-	// connections (database)
+	logSlog := logger.SetUpLogger(
+		cfg.AppConfig.Mode,
+		cfg.LogConfig.Level,
+		cfg.LogConfig.Format,
+		cfg.LogConfig.AddSource)
+
 	_, err := database.NewGORM(cfg.DBConfig)
 	if err != nil {
 		log.Fatal(err)
 	}
+
 	var _ = context.Background()
 
 	httpHandler := server.NewHandler(&cfg.AppConfig, logSlog)
@@ -39,13 +44,6 @@ func loadConfig() *config.Env {
 
 }
 
-func setupLogger(cfg *config.Env) *logger.SlogLogger {
-	// Инициализируем логгер на основе конфигурации
-	baseLogger := logger.SetUpLogger(cfg.AppConfig.Mode, cfg.LogConfig.Level, cfg.LogConfig.Format, cfg.LogConfig.AddSource)
-	return logger.NewSlogLogger(baseLogger)
-}
-
-// todo добавить логирования БД
 // todo Добавить миграцию
 // todo написать контроллеры
 // todo написать логику
