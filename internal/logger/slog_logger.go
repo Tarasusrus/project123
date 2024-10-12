@@ -1,7 +1,6 @@
 package logger
 
 import (
-	"BaseApi/internal/logger"
 	"log/slog"
 )
 
@@ -11,25 +10,25 @@ type SlogLogger struct {
 }
 
 // Создаем новый SlogLogger
-func NewSlogLogger(baseLogger *slog.Logger) *SlogLogger {
+func NewLogger(baseLogger *slog.Logger) Logger {
 	return &SlogLogger{
 		logger: baseLogger,
 	}
 }
 
-func (sl *SlogLogger) Log(message string, level logger.Level, ctx ...any) {
+func (sl *SlogLogger) Log(message string, level Level, ctx ...any) {
 	switch level {
-	case logger.Debug:
+	case Debug:
 		sl.Debug(message, ctx...)
-	case logger.Info:
+	case Info:
 		sl.Info(message, ctx...)
-	case logger.Warn:
+	case Warn:
 		sl.Warn(message, ctx...)
-	case logger.Error:
+	case Error:
 		sl.Error(message, ctx...)
-	case logger.Fatal:
+	case Fatal:
 		sl.Fatal(message, ctx...)
-	case logger.Panic:
+	case Panic:
 		sl.Panic(message, ctx...)
 	}
 }
