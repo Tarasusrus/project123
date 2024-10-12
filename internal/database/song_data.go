@@ -6,7 +6,7 @@ import (
 	"errors"
 )
 
-func (d *Database) AddSong(ctx context.Context, songData models.NewSong) error {
+func (d *Database) AddSong(ctx context.Context, songData models.Song) error {
 	if err := d.client.WithContext(ctx).Create(&songData).Error; err != nil {
 		return err
 	}

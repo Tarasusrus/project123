@@ -5,10 +5,16 @@ import (
 	"BaseApi/internal/database"
 	"BaseApi/internal/logger"
 	"BaseApi/internal/server"
-	service2 "BaseApi/internal/service"
+	"BaseApi/internal/service"
 	"context"
 	"log"
 )
+
+// @title Music API
+// @version 1.0
+// @description Это API для управления музыкой.
+// @host localhost:8080
+// @BasePath /api/v1
 
 func main() {
 	// Загрузка конфигурации
@@ -35,7 +41,7 @@ func main() {
 	logSlog.Info("Migrations ok")
 
 	var _ = context.Background()
-	service := service2.NewMusicService(db)
+	service := service.NewMusicService(db)
 
 	httpHandler := server.NewHandler(&cfg.AppConfig, logSlog, service)
 	if err = httpHandler.Serve(); err != nil {

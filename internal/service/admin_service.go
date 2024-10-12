@@ -24,5 +24,12 @@ func (a adminService) UpdateSong(ctx context.Context, songID int, songData model
 }
 
 func (a adminService) AddSong(ctx context.Context, songData models.NewSong) error {
-	return a.Repository.AddSong(ctx, songData)
+	var newSong models.Song
+	newSong = models.Song{
+		Group: songData.Group,
+		Song:  songData.Song,
+	}
+	song := a.Repository.AddSong(ctx, newSong)
+
+	return song
 }

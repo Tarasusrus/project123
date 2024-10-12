@@ -5,6 +5,7 @@ import (
 	"BaseApi/internal/server/middleware"
 	"BaseApi/internal/service/interfaces"
 	"context"
+	httpSwagger "github.com/swaggo/http-swagger"
 	"log"
 	"net/http"
 	"os"
@@ -52,13 +53,14 @@ func NewHandler(cfg *AppCfg, logger logger.Logger, MusicService interfaces.Music
 
 func (h *Handler) mapRoutes(prefix string) {
 	prefixRouter := h.Router.PathPrefix(prefix).Subrouter()
+	h.Router.PathPrefix("/swagger/").Handler(httpSwagger.WrapHandler)
 
 	appRouter := prefixRouter.PathPrefix("/api/v1").Subrouter()
 
 	appRouter.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 	}).Methods(http.MethodHead)
-	appRouter.HandleFunc("/song", h.GetSongText).Methods(http.MethodGet)
+	appRouter.HandleFunc("/songs", h.GetSongText).Methods(http.MethodGet)
 	appRouter.HandleFunc("/song", h.AddSong).Methods(http.MethodPost)
 	appRouter.HandleFunc("/song", h.UpdateSong).Methods(http.MethodPut)
 	appRouter.HandleFunc("/song", h.DeleteSong).Methods(http.MethodDelete)

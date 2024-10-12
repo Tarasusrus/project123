@@ -10,5 +10,5 @@ type Repository interface {
 	GetLibrary(ctx context.Context, filter models.LibraryFilter, page, pageSize int) ([]models.Song, error)
 	DeleteSong(ctx context.Context, songID int) error
 	UpdateSong(ctx context.Context, songID int, songData models.SongUpdate) error
-	AddSong(ctx context.Context, songData models.NewSong) error
+	AddSong(ctx context.Context, songData models.Song) error
 }

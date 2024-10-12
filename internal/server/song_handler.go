@@ -9,6 +9,15 @@ import (
 	"strconv"
 )
 
+// @Summary Add a new song
+// @Description Add a song and enrich it with data from external API
+// @Tags Songs
+// @Accept json
+// @Produce json
+// @Param song body NewSong true "New Song"
+// @Success 201 {object} Song
+// @Failure 400 {object} map[string]string
+// @Router /songs [post]
 func (h *Handler) AddSong(w http.ResponseWriter, r *http.Request) {
 	var newSong models.NewSong
 	h.logger.Debug("Начало декодирования")
