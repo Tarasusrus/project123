@@ -58,7 +58,11 @@ func (h *Handler) mapRoutes(prefix string) {
 	appRouter.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 	}).Methods(http.MethodHead)
-	appRouter.HandleFunc("/info", h.AddSong).Methods(http.MethodPost)
+	appRouter.HandleFunc("/song", h.GetSongText).Methods(http.MethodGet)
+	appRouter.HandleFunc("/song", h.AddSong).Methods(http.MethodPost)
+	appRouter.HandleFunc("/song", h.UpdateSong).Methods(http.MethodPut)
+	appRouter.HandleFunc("/song", h.DeleteSong).Methods(http.MethodDelete)
+	appRouter.HandleFunc("/library", h.DeleteSong).Methods(http.MethodGet)
 
 	appRouter.Use(middleware.RequestID)
 
