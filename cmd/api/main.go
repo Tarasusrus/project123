@@ -3,8 +3,9 @@ package main
 import (
 	"BaseApi/internal/config"
 	"BaseApi/internal/database"
+	"BaseApi/internal/logger"
 	"BaseApi/internal/server"
-	"BaseApi/tools/logger"
+	service2 "BaseApi/internal/service"
 	"context"
 	"log"
 )
@@ -13,21 +14,22 @@ func main() {
 	// Загрузка конфигурации
 	cfg := loadConfig()
 
-	// slogLogger
-	logSlog := logger.SetUpLogger(
+	baseLogger := logger.SetUpLogger(
 		cfg.AppConfig.Mode,
 		cfg.LogConfig.Level,
 		cfg.LogConfig.Format,
 		cfg.LogConfig.AddSource)
+	logSlog := logger.NewLogger(baseLogger)
 
-	_, err := database.NewGORM(cfg.DBConfig)
+	db, err := database.NewGORM(cfg.DBConfig)
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	var _ = context.Background()
+	service := service2.NewMusicService(db)
 
-	httpHandler := server.NewHandler(&cfg.AppConfig, logSlog)
+	httpHandler := server.NewHandler(&cfg.AppConfig, logSlog, service)
 	if err = httpHandler.Serve(); err != nil {
 		log.Fatal(err)
 	}
@@ -47,6 +49,5 @@ func loadConfig() *config.Env {
 // todo Добавить миграцию
 // todo написать контроллеры
 // todo написать логику
-// todo написать репозиторий
 // todo написать доки
 // todo по-тестить
