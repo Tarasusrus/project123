@@ -21,10 +21,18 @@ func main() {
 		cfg.LogConfig.AddSource)
 	logSlog := logger.NewLogger(baseLogger)
 
+	logSlog.Info("logger start")
 	db, err := database.NewGORM(cfg.DBConfig)
 	if err != nil {
 		log.Fatal(err)
 	}
+	defer db.Close()
+	logSlog.Info("db start")
+
+	if err := db.RunMigrations(); err != nil {
+		log.Fatalf("Ошибка миграции: %v", err)
+	}
+	logSlog.Info("Migrations ok")
 
 	var _ = context.Background()
 	service := service2.NewMusicService(db)
@@ -33,6 +41,8 @@ func main() {
 	if err = httpHandler.Serve(); err != nil {
 		log.Fatal(err)
 	}
+
+	logSlog.Info("httpHandler ok")
 
 }
 
@@ -46,8 +56,5 @@ func loadConfig() *config.Env {
 
 }
 
-// todo Добавить миграцию
-// todo написать контроллеры
-// todo написать логику
 // todo написать доки
 // todo по-тестить

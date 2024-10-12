@@ -16,16 +16,13 @@ type adminService struct {
 }
 
 func (a adminService) DeleteSong(ctx context.Context, songID int) error {
-	//TODO implement me
-	panic("implement me")
+	return a.Repository.DeleteSong(ctx, songID)
 }
 
 func (a adminService) UpdateSong(ctx context.Context, songID int, songData models.SongUpdate) error {
-	//TODO implement me
-	panic("implement me")
+	return a.Repository.UpdateSong(ctx, songID, songData)
 }
 
 func (a adminService) AddSong(ctx context.Context, songData models.NewSong) error {
-	//TODO implement me
-	panic("implement me")
+	return a.Repository.AddSong(ctx, songData)
 }

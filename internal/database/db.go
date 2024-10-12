@@ -1,6 +1,7 @@
 package database
 
 import (
+	"BaseApi/internal/models"
 	"fmt"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -30,6 +31,21 @@ func NewGORM(cfg Config) (*Database, error) {
 
 }
 
-func (d *Database) ConnectDB() *gorm.DB {
+// RunMigrations выполняет миграции для всех моделей
+func (d *Database) RunMigrations() error {
+	return d.client.AutoMigrate(
+		&models.Song{},
+	)
+}
+
+func (d *Database) GetClient() *gorm.DB {
 	return d.client
+}
+
+func (d *Database) Close() error {
+	db, err := d.client.DB()
+	if err != nil {
+		return err
+	}
+	return db.Close()
 }
