@@ -3,6 +3,7 @@ package server
 import (
 	"BaseApi/internal/logger"
 	"BaseApi/internal/server/middleware"
+	"BaseApi/internal/service/interfaces"
 	"context"
 	"log"
 	"net/http"
@@ -23,15 +24,17 @@ type AppCfg struct {
 
 // Handler - структура хендлера
 type Handler struct {
-	Router *mux.Router
-	Server *http.Server
-	logger logger.Logger
+	Router       *mux.Router
+	Server       *http.Server
+	MusicService interfaces.MusicService
+	logger       logger.Logger
 }
 
 // NewHandler - возвращает хендлер
-func NewHandler(cfg *AppCfg, logger logger.Logger) *Handler {
+func NewHandler(cfg *AppCfg, logger logger.Logger, MusicService interfaces.MusicService) *Handler {
 	h := &Handler{
-		logger: logger,
+		MusicService: MusicService,
+		logger:       logger,
 	}
 	h.Router = mux.NewRouter()
 	h.mapRoutes(cfg.ApiPrefix)
@@ -55,6 +58,7 @@ func (h *Handler) mapRoutes(prefix string) {
 	appRouter.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 	}).Methods(http.MethodHead)
+	appRouter.HandleFunc("/info", h.AddSong).Methods(http.MethodPost)
 
 	appRouter.Use(middleware.RequestID)
 
