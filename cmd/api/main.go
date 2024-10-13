@@ -1,3 +1,8 @@
+// @title Базовое бекенд решение
+// @version 1.0
+// @description Простой сервер.
+// @host localhost:8080
+// @BasePath /api/v1
 package main
 
 import (

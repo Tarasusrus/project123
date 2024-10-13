@@ -1,9 +1,9 @@
-name: Lint
+name: Lint and Generate Docs
 
 on:
   push:
     branches:
-      - main  # Или любая другая ветка, где нужно запускать линтер
+      - main  # Или другая ветка, где нужно запускать задачи
 
 jobs:
   lint:
@@ -23,3 +23,29 @@ jobs:
 
       - name: Run Golangci-lint
         uses: golangci/golangci-lint-action@v6.0.1
+
+  generate-docs:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Go environment
+        uses: actions/setup-go@v2
+        with:
+          go-version: 1.22
+
+      - name: Install swag
+        run: go install github.com/swaggo/swag/cmd/swag@latest
+
+      - name: Generate Swagger Documentation
+        run: swag init -g cmd/api/main.go -d . --parseInternal
+
+      - name: Commit generated docs
+        run: |
+          git config --local user.name "github-actions[bot]"
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git add ./docs
+          git commit -m "Update Swagger documentation" || echo "No changes to commit"
+          git push
