@@ -52,12 +52,6 @@ func (h *Handler) mapRoutes(prefix string) {
 
 	appRouter := prefixRouter.PathPrefix("/api/v1").Subrouter()
 
-	// @Summary Health Check
-	// @Description Проверка доступности API
-	// @ID health-check
-	// @Produce plain
-	// @Success 200 {string} string "OK"
-	// @Router /api/v1/ [head]
 	appRouter.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 	}).Methods(http.MethodHead)

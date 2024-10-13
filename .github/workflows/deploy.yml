@@ -45,6 +45,6 @@ jobs:
       - name: Check for documentation changes
         run: |
           if [ -n "$(git status --porcelain ./docs)" ]; then
-            echo "Swagger documentation is outdated. Please run 'swag init' locally and commit the changes."
+            echo "Документация не актуальна. Нужно запустить 'swag init -g cmd/api/main.go -o ./docs --parseInternal'"
             exit 1
           fi
