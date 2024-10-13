@@ -9,17 +9,5 @@ cp .env.example .env
 
 2. Билдим и поднимаем контейнеры в docker-compose (app + postgreSQL containers):
 
-### Команды
 
-Сбилдить и поднять контейнеры:
-
-```
-make up
-```
-
-Завершить работу сервиса:
-
-```
-make down
-```
 
